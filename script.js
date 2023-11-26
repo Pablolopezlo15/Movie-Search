@@ -63,7 +63,7 @@ function cargar(page){
 
     }
 
-    var URL = "http://www.omdbapi.com/?apikey=54589e65&s="+inputBuscar.value+"&type="+tipo+"&page="+page;
+    var URL = "https://www.omdbapi.com/?apikey=54589e65&s="+inputBuscar.value+"&type="+tipo+"&page="+page;
     var cargandoElement = document.getElementById("typing-indicator");
     cargandoElement.style.visibility = "visible";
 
@@ -88,7 +88,7 @@ function cargarDetalles(e){
     var cargandoElement = document.getElementById("typing-indicator");
     cargandoElement.style.visibility = "visible";
 
-    var URL2 = "http://www.omdbapi.com/?apikey=54589e65&i="+e.target.id+"&plot=full";
+    var URL2 = "https://www.omdbapi.com/?apikey=54589e65&i="+e.target.id+"&plot=full";
     var xhttp2 = new XMLHttpRequest();
     xhttp2.open('GET', URL2, true);
     xhttp2.onload = function() {
@@ -291,7 +291,7 @@ function cargarPorOrdenacion(page) {
 
     }
 
-    var URL = "http://www.omdbapi.com/?apikey=54589e65&s="+inputBuscar.value+"&type="+tipo+"&page="+page;
+    var URL = "https://www.omdbapi.com/?apikey=54589e65&s="+inputBuscar.value+"&type="+tipo+"&page="+page;
     var cargandoElement = document.getElementById("typing-indicator");
     cargandoElement.style.visibility = "visible";
 
@@ -305,7 +305,7 @@ function cargarPorOrdenacion(page) {
 
             peliculas.forEach(function(pelicula) {
                 var xhttp2 = new XMLHttpRequest();
-                xhttp2.open('GET', "http://www.omdbapi.com/?apikey=54589e65&i="+pelicula.imdbID, true);
+                xhttp2.open('GET', "https://www.omdbapi.com/?apikey=54589e65&i="+pelicula.imdbID, true);
                 xhttp2.onload = function() {
                     if (this.readyState == 4 && this.status == 200) {
                         var datosPelicula = JSON.parse(this.responseText);
