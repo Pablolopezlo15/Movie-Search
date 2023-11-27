@@ -48,10 +48,6 @@ function cargar(page){
     var tipo = document.getElementById("tipo").value;
     var MayorRecaudacionBtn = document.getElementById("MayorRecaudacionBtn"); 
 
-    if (inputBuscar.value.length < 3) {
-        return;
-    }
-
     if (tipo == "movie") {
         tipo = "movie";
         MayorRecaudacionBtn.style.display = "block"; 
@@ -64,7 +60,7 @@ function cargar(page){
     }
 
     var URL = "https://www.omdbapi.com/?apikey=54589e65&s="+inputBuscar.value+"&type="+tipo+"&page="+page;
-    var cargandoElement = document.getElementById("typing-indicator");
+    var cargandoElement = document.getElementById("preloader");
     cargandoElement.style.visibility = "visible";
 
     var xhttp = new XMLHttpRequest();
@@ -85,7 +81,7 @@ function cargar(page){
 
 
 function cargarDetalles(e){
-    var cargandoElement = document.getElementById("typing-indicator");
+    var cargandoElement = document.getElementById("preloader");
     cargandoElement.style.visibility = "visible";
 
     var URL2 = "https://www.omdbapi.com/?apikey=54589e65&i="+e.target.id+"&plot=full";
@@ -116,6 +112,9 @@ function maquetarDetalles(datosObjeto){
     divImagen.setAttribute("class", "divImagen");
     var poster = document.createElement("img");
     poster.setAttribute("class", "poster");
+    poster.addEventListener("error", () => {
+        poster.src = "img/notfound.jpg";                    
+    });
     if(datosObjeto.Poster == "N/A"){
         poster.src = "img/notfound.jpg";
     }
@@ -179,7 +178,7 @@ function maquetar(datosObjeto) {
     var peliculas = datosObjeto.Search;
 
     if  (inputBuscar.value != "") {
-        var cargandoElement = document.getElementById("typing-indicator");
+        var cargandoElement = document.getElementById("preloader");
         cargandoElement.style.visibility = "hidden";
         var contenedorPeliculas = document.getElementById("contenedorPeliculas");
 
@@ -201,6 +200,10 @@ function maquetar(datosObjeto) {
                 var cartel = document.createElement("img");
                 cartel.setAttribute("id", pelicula.imdbID);
                 cartel.setAttribute("class", "cartel");
+                cartel.addEventListener("error", () => {
+                    cartel.src = "img/notfound.jpg";                    
+                });
+                
                 if(pelicula.Poster == "N/A"){
                     cartel.src = "img/notfound.jpg";
                     cartel.addEventListener("click", cargarDetalles);
@@ -233,10 +236,14 @@ function limpiarRegistros(){
     var contenedorPeliculas = document.getElementById("contenedorPeliculas");
     var encontrados = document.getElementById("encontrados");
     var resultados = document.getElementById("resultados");
-    var chartContainer = document.getElementById("chartContainer");
+    var chartContainer1 = document.getElementById("chartContainer1");
+    var chartContainer2 = document.getElementById("chartContainer2");
 
-    chartContainer.style.height = "0px";
-    chartContainer.innerHTML = "";
+
+    chartContainer1.style.height = "0px";
+    chartContainer1.innerHTML = "";
+    chartContainer2.style.height = "0px";
+    chartContainer2.innerHTML = "";
     contenedorPeliculas.innerHTML = "";
     encontrados.textContent = "";
     resultados.textContent = "";
@@ -268,102 +275,101 @@ function checkedBoton(e) {
     MasVotadasBtn.checked = false;
 
     e.target.checked = true;
-    cargarPorOrdenacion(1);
+    cargarPorOrdenacion();
 }
 
 
-function cargarPorOrdenacion(page) {
+function cargarPorOrdenacion() {
     var inputBuscar = document.getElementById("nombrePelicula");
     var tipo = document.getElementById("tipo").value;
-    var MayorRecaudacionBtn = document.getElementById("MayorRecaudacionBtn"); 
-
-    if (inputBuscar.value.length < 3) {
-        return;
-    }
+    var MayorRecaudacionBtn = document.getElementById("MayorRecaudacionBtn");
 
     if (tipo == "movie") {
         tipo = "movie";
-        MayorRecaudacionBtn.style.display = "block"; 
-    } else if (tipo == "serie"){
+        MayorRecaudacionBtn.style.display = "block";
+    } else if (tipo == "serie") {
         tipo = "series";
         inputBuscar.ariaPlaceholder = "Serie";
-        MayorRecaudacionBtn.style.display = "none"; 
-
+        MayorRecaudacionBtn.style.display = "none";
     }
 
-    var URL = "https://www.omdbapi.com/?apikey=54589e65&s="+inputBuscar.value+"&type="+tipo+"&page="+page;
-    var cargandoElement = document.getElementById("typing-indicator");
-    cargandoElement.style.visibility = "visible";
+    var contenedorPeliculas = document.getElementById("contenedorPeliculas");
+    var peliculas = contenedorPeliculas.querySelectorAll(".containerPrincipal");
+    var peliculasArray = [];
 
-    var xhttp = new XMLHttpRequest();
-    xhttp.open('GET', URL, true);
-    xhttp.onload = function() {
-        if (this.readyState == 4 && this.status == 200) {
-            var datosObjeto = JSON.parse(this.responseText);
-            var peliculas = datosObjeto.Search;
-            var contador = 0;
+    peliculas.forEach(function (pelicula) {
+        var peliculaObj = {
+            imdbID: pelicula.querySelector(".cartel").id,
+            Title: pelicula.querySelector(".titulo").textContent,
+            Year: pelicula.querySelector(".fecha").textContent.replace("Año: ", ""),
+            Poster: pelicula.querySelector(".cartel").src,
+            imdbRating: null,
+            BoxOffice: null,
+            imdbVotes: null,
+        };
+        peliculasArray.push(peliculaObj);
+    });
 
-            peliculas.forEach(function(pelicula) {
-                var xhttp2 = new XMLHttpRequest();
-                xhttp2.open('GET', "https://www.omdbapi.com/?apikey=54589e65&i="+pelicula.imdbID, true);
-                xhttp2.onload = function() {
-                    if (this.readyState == 4 && this.status == 200) {
-                        var datosPelicula = JSON.parse(this.responseText);
-                        pelicula.imdbRating = datosPelicula.imdbRating;
-                        pelicula.BoxOffice = datosPelicula.BoxOffice;
-                        pelicula.imdbVotes = datosPelicula.imdbVotes;
-                        contador++;
+    var totalResults = peliculas.length;
 
-                        if (contador === peliculas.length) {
-                            var imdbRatingBtn = document.getElementById("imdbRatingBtn");
-                            var MayorRecaudacionBtn = document.getElementById("MayorRecaudacionBtn");
-                            var MasVotadasBtn = document.getElementById("MasVotadasBtn");
+    var contador = 0;
 
-                            if (imdbRatingBtn.checked){
-                                peliculas.sort(function(a, b) {
-                                    var ratingA = parseFloat(a.imdbRating);
-                                    var ratingB = parseFloat(b.imdbRating);
-                                    return ratingB - ratingA;
-                                });
-                                var ordenacion = "IMDB Rating";
-                                var modoordenacion = "imdbRating";
-                                crearBotonInforme(peliculas, ordenacion, modoordenacion);
-                            }
-                            else if (MayorRecaudacionBtn.checked){
-                                peliculas.sort(function(a, b) {
-                                    var boxOfficeA = parseInt(a.BoxOffice.replace(/[\$,]/g, ''));
-                                    var boxOfficeB = parseInt(b.BoxOffice.replace(/[\$,]/g, ''));
-                                    return boxOfficeB - boxOfficeA;
-                                });
-                                var ordenacion = "Mayor recaudación";
-                                var modoordenacion = "BoxOffice";
-                                crearBotonInforme(peliculas, ordenacion, modoordenacion);
+    peliculasArray.forEach(function (pelicula) {
+        var xhttp2 = new XMLHttpRequest();
+        xhttp2.open('GET', "https://www.omdbapi.com/?apikey=54589e65&i=" + pelicula.imdbID, true);
+        xhttp2.onload = function () {
+            if (this.readyState == 4 && this.status == 200) {
+                var datosPelicula = JSON.parse(this.responseText);
+                pelicula.imdbRating = datosPelicula.imdbRating;
+                pelicula.BoxOffice = datosPelicula.BoxOffice;
+                pelicula.imdbVotes = datosPelicula.imdbVotes;
+                contador++;
 
-                            }
-                            else if (MasVotadasBtn.checked){
-                                peliculas.sort(function(a, b) {
-                                    var votesA = parseInt(a.imdbVotes.replace(/,/g, ''));
-                                    var votesB = parseInt(b.imdbVotes.replace(/,/g, ''));
-                                    return votesB - votesA;
-                                });
-                                var ordenacion = "Más votadas";
-                                var modoordenacion = "imdbVotes";
-                                crearBotonInforme(peliculas, ordenacion, modoordenacion);
-                            }
+                if (contador === peliculasArray.length) {
+                    var imdbRatingBtn = document.getElementById("imdbRatingBtn");
+                    var MayorRecaudacionBtn = document.getElementById("MayorRecaudacionBtn");
+                    var MasVotadasBtn = document.getElementById("MasVotadasBtn");
 
-                            cargandoElement.style.visibility = "hidden";
-                            limpiarRegistros();
-                            maquetar(datosObjeto);
-                            cargando = false;
-                        }
+                    if (imdbRatingBtn.checked) {
+                        peliculasArray.sort(function (a, b) {
+                            var ratingA = parseFloat(a.imdbRating);
+                            var ratingB = parseFloat(b.imdbRating);
+                            return ratingB - ratingA;
+                        });
+                        var ordenacion = "IMDB Rating";
+                        var modoordenacion = "imdbRating";
+                        crearBotonInforme(peliculasArray, ordenacion, modoordenacion);
+                    } else if (MayorRecaudacionBtn.checked) {
+                        peliculasArray.sort(function (a, b) {
+                            var boxOfficeA = parseInt(a.BoxOffice.replace(/[\$,]/g, ''));
+                            var boxOfficeB = parseInt(b.BoxOffice.replace(/[\$,]/g, ''));
+                            return boxOfficeB - boxOfficeA;
+                        });
+                        var ordenacion = "Mayor recaudación";
+                        var modoordenacion = "BoxOffice";
+                        crearBotonInforme(peliculasArray, ordenacion, modoordenacion);
+                    } else if (MasVotadasBtn.checked) {
+                        peliculasArray.sort(function (a, b) {
+                            var votesA = parseInt(a.imdbVotes.replace(/,/g, ''));
+                            var votesB = parseInt(b.imdbVotes.replace(/,/g, ''));
+                            return votesB - votesA;
+                        });
+                        var ordenacion = "Más votadas";
+                        var modoordenacion = "imdbVotes";
+                        crearBotonInforme(peliculasArray, ordenacion, modoordenacion);
                     }
+
+                    limpiarRegistros();
+                    maquetar({ Search: peliculasArray });
+                    cargando = false;
                 }
-                xhttp2.send();
-            });
+            }
         }
-    }
-    xhttp.send();
+        xhttp2.send();
+    });
 }
+
+    
 
 function crearBotonInforme(peliculas, ordenacion, modoordenacion) {
     if (document.getElementById("crearInformeBtn")) {
@@ -399,6 +405,7 @@ function generarInforme(peliculas,ordenacion, modoordenacion) {
     function drawChart() {
         console.log(peliculas[0][modoordenacion]); 
         if (modoordenacion == "BoxOffice") {
+
             var data = google.visualization.arrayToDataTable([
                 ["Element", "Recaudación en $", { role: "style" } ],
                 [peliculas[0].Title, parseInt(peliculas[0][modoordenacion].replace(/[\$,]/g, '')), "gold"],
@@ -407,21 +414,46 @@ function generarInforme(peliculas,ordenacion, modoordenacion) {
                 [peliculas[3].Title, parseInt(peliculas[3][modoordenacion].replace(/[\$,]/g, '')), "iron"],
                 [peliculas[4].Title, parseInt(peliculas[4][modoordenacion].replace(/[\$,]/g, '')), "iron"]
             ]);
-            var view = new google.visualization.DataView(data);
-            view.setColumns([0, 1,
+
+            
+            var viewTop5 = new google.visualization.DataView(data);
+
+            var data = [["Element", "Recaudación en $", { role: "style" }]];
+            for (var i = 0; i < peliculas.length; i++) {
+                var row = [peliculas[i].Title, parseInt(peliculas[i][modoordenacion].replace(/[\$,]/g, '')), "gold"];
+                data.push(row);
+            }
+        
+            var dataTable = google.visualization.arrayToDataTable(data);
+            var viewAll = new google.visualization.DataView(dataTable);
+
+            viewTop5.setColumns([0, 1,
                              { calc: "stringify",
                                sourceColumn: 1,
                                type: "string",
                                role: "annotation" },
                              2]);
-      
+
+            viewAll.setColumns([0, 1,
+               { calc: "stringify",
+                 sourceColumn: 1,
+                 type: "string",
+                 role: "annotation" },
+               2]);
             var options = {
-              title: "Películas con "+ ordenacion+" en $",
-              width: 600,
+              title: "Top 5 Películas con "+ ordenacion+" en $",
+              width: 1300,
               height: 400,
               bar: {groupWidth: "95%"},
               legend: { position: "none" },
             };
+            var options2 = {
+                title: "Películas con "+ ordenacion+" en $",
+                width: 1300,
+                height: 400,
+                bar: {groupWidth: "95%"},
+                legend: { position: "none" },
+              };
         }
         else{
             var data = google.visualization.arrayToDataTable([
@@ -429,38 +461,72 @@ function generarInforme(peliculas,ordenacion, modoordenacion) {
                 [peliculas[0].Title, parseFloat(peliculas[0][modoordenacion]), "gold"],
                 [peliculas[1].Title, parseFloat(peliculas[1][modoordenacion]), "silver"],
                 [peliculas[2].Title, parseFloat(peliculas[2][modoordenacion]), "#CD7F32"],
-                [peliculas[3].Title, parseFloat(peliculas[3][modoordenacion]), "iron"],
-                [peliculas[4].Title, parseFloat(peliculas[4][modoordenacion]), "iron"]
+                [peliculas[3].Title, parseFloat(peliculas[3][modoordenacion]), "green"],
+                [peliculas[4].Title, parseFloat(peliculas[4][modoordenacion]), "blue"]
             ]);
 
-            var view = new google.visualization.DataView(data);
-            view.setColumns([0, 1,
+            
+            var viewTop5 = new google.visualization.DataView(data);
+
+            var data = [["Element", ordenacion, { role: "style" }]];
+            for (var i = 0; i < peliculas.length; i++) {
+                var row = [peliculas[i].Title, parseFloat(peliculas[i][modoordenacion]), "gold"];
+                data.push(row);
+            }
+        
+            var dataTable = google.visualization.arrayToDataTable(data);
+            var viewAll = new google.visualization.DataView(dataTable);
+
+            viewTop5.setColumns([0, 1,
                              { calc: "stringify",
                                sourceColumn: 1,
                                type: "string",
                                role: "annotation" },
                              2]);
-      
+
+            viewAll.setColumns([0, 1,
+               { calc: "stringify",
+                 sourceColumn: 1,
+                 type: "string",
+                 role: "annotation" },
+               2]);
             var options = {
-              title: "Películas más valoradas "+ ordenacion,
-              width: 600,
+              title: "Top 5 Peliculas "+ ordenacion,
+              width: 1300,
               height: 400,
               bar: {groupWidth: "95%"},
               legend: { position: "none" },
             };
+            var options2 = {
+                title: "Películas según "+ ordenacion,
+                width: 1300,
+                height: 400,
+                bar: {groupWidth: "95%"},
+                legend: { position: "none" },
+              };
         
         }
 
         var peliculasContainer = document.querySelector("#contenedorPeliculas"); 
-        var chartContainer = document.getElementById("chartContainer");
-        chartContainer.style.height = "400px";
+
+        var chartContainer1 = document.getElementById("chartContainer1");
+        chartContainer1.style.height = "400px";
+
+        var chartContainer2 = document.getElementById("chartContainer2");
+        chartContainer2.style.height = "400px";
+
+        var chartContainer = document.createElement("div");
 
 
         peliculasContainer.parentNode.insertBefore(chartContainer, peliculasContainer);
 
-        var chart = new google.visualization.BarChart(document.getElementById("chartContainer"));
-        chart.draw(view, options);
+        var chart1 = new google.visualization.ColumnChart(document.getElementById("chartContainer1"));
+        chart1.draw(viewTop5, options);
+
+        var chart2 = new google.visualization.ColumnChart(document.getElementById("chartContainer2"));
+        chart2.draw(viewAll, options2);
+
+
 
     }
 }
-

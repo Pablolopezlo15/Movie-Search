@@ -281,6 +281,7 @@
   
   .header {
     display: flex;
+    justify-content: center;
     position: fixed;
     top: 0;
     left: 0;
@@ -292,7 +293,7 @@
   
   .header.active {
     background: var(--citrine);
-    height: 5vh;
+    height: 7vh;
     padding-block: 20px;
   }
   
@@ -311,21 +312,16 @@
     color: var(--white);
     font-size: 40px;
   }
-  
+  .nav-bar{
+    display: flex;
+  }
   .navbar {
     display: flex;
-    justify-content: space-between;
-    position: fixed;
-    top: 0;
-    right: -300px;
-    background: var(--eerie-black);
-    width: 100%;
-    max-width: 300px;
-    height: 100%;
-    box-shadow: -1px 0 3px hsl(0, 0%, 0%, 0.2);
+    justify-content: center;
+    align-items: center;
+
+    /* right: -300px; */
     transition: 0.15s ease-in;
-    visibility: hidden;
-    z-index: 3;
   }
   
   
@@ -415,19 +411,19 @@
     justify-content: center;
   }
 
-  
+  .charts-container{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 20px;
+  }
   
   
   /*-----------------------------------*\
    * #TOP RATED
   \*-----------------------------------*/
-  
-  .top-rated {
-    background: url("../images/top-rated-bg.jpg") no-repeat;
-    background-size: cover;
-    background-position: center;
-    padding-block: var(--section-padding);
-  }
+
   
   .top-rated .section-title { margin-bottom: 50px; }
   
@@ -478,11 +474,9 @@
   \*-----------------------------------*/
   
   .footer-top {
-    /* background: url("../images/footer-bg.jpg") no-repeat; */
     background-size: cover;
     background-position: center;
     margin-bottom: 2%;
-    /* padding-block: 50px 50px; */
   }
   
 
@@ -600,13 +594,7 @@
      */
   
     .upcoming .movies-list > li { min-width: calc(50% - 15px); }
-  
-  
-  
-  
-  
 
-  
   }
   
   
@@ -617,7 +605,7 @@
    * responsive for large than 768px screen
    */
   
-  @media (min-width: 768px) {
+  @media (min-width: 0px) {
   
     /**
      * CUSTOM PROPERTY
@@ -677,24 +665,24 @@
       height: 14px;
     }
   
-    .lang-wrapper {
+    .type-wrapper {
       display: flex;
       align-items: center;
       gap: 5px;
     }
   
-    .lang-wrapper label {
+    .type-wrapper label {
       color: var(--citrine);
       font-size: 20px;
     }
   
-    .lang-wrapper select {
+    .type-wrapper select {
       color: var(--white);
       font-size: var(--fs-9);
       font-weight: var(--fw-700);
     }
   
-    .lang-wrapper option { color: var(--black); }
+    .type-wrapper option { color: var(--black); }
   
   
   
@@ -750,7 +738,6 @@
     .navbar-social-list { display: none; }
   
     .navbar {
-      all: unset;
       margin-left: auto;
       display: block;
       height: auto;
@@ -899,92 +886,13 @@
 /*PRELOAD*/
 
 
-  .typing-indicator {
-    visibility: hidden;
-    width: 60px;
-    height: 30px;
-    position: relative;
-    z-index: 4;
-  }
-  
-  .typing-circle {
-    width: 8px;
-    height: 8px;
-    position: absolute;
-    border-radius: 50%;
-    background-color: rgb(26, 82, 195);
-    left: 15%;
-    transform-origin: 50%;
-    animation: typing-circle7124 0.5s alternate infinite ease;
-  }
-  
-  @keyframes typing-circle7124 {
-    0% {
-      top: 20px;
-      height: 5px;
-      border-radius: 50px 50px 25px 25px;
-      transform: scaleX(1.7);
-    }
-  
-    40% {
-      height: 8px;
-      border-radius: 50%;
-      transform: scaleX(1);
-    }
-  
-    100% {
-      top: 0%;
-    }
-  }
-  
-  .typing-circle:nth-child(2) {
-    left: 45%;
-    animation-delay: 0.2s;
-  }
-  
-  .typing-circle:nth-child(3) {
-    left: auto;
-    right: 15%;
-    animation-delay: 0.3s;
-  }
-  
-  .typing-shadow {
-    width: 5px;
-    height: 4px;
-    border-radius: 50%;
-    background-color: rgba(0, 0, 0, 0.2);
-    position: absolute;
-    top: 30px;
-    transform-origin: 50%;
-    z-index: 3;
-    left: 15%;
-    filter: blur(1px);
-    animation: typing-shadow046 0.5s alternate infinite ease;
-  }
-  
-  @keyframes typing-shadow046 {
-    0% {
-      transform: scaleX(1.5);
-    }
-  
-    40% {
-      transform: scaleX(1);
-      opacity: 0.7;
-    }
-  
-    100% {
-      transform: scaleX(0.2);
-      opacity: 0.4;
-    }
-  }
-  
-  .typing-shadow:nth-child(4) {
-    left: 45%;
-    animation-delay: 0.2s;
-  }
-  
-  .typing-shadow:nth-child(5) {
-    left: auto;
-    right: 15%;
-    animation-delay: 0.3s;
-  }
+.preloader {
+  visibility: hidden;
+  width: 100px;
+  background: var(--eerie-black);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 20px;
+
+}

@@ -17,26 +17,21 @@
 
 <body id="top">
   <header class="header" data-header>
-    <div class="container">
-
-
-        <a href="./index.html" class="logo">
+    <div class="nav-bar">
+        <!-- <a href="./index.html" class="logo">
           <h3>Pablo</h3>
-          <!-- <img src="img/pllogo.png" alt="Filmlane logo"> -->
-        </a>
+        </a> -->
 
         <div class="header-actions">
-            <div class="lang-wrapper">
+            <div class="type-wrapper">
                 <select name="tipo" id="tipo">
                     <option value="movie">Movies</option>
                     <option value="serie">Series</option>
                 </select>
             </div>
-
-            <nav class="navbar" data-navbar>
+              <nav class="navbar" data-navbar>
                 <input type="text" name="nombrePelicula" id="nombrePelicula" placeholder="Movie...">
-            </nav>
-
+              </nav>
             <button class="search-btn">
               <ion-icon name="search-outline"></ion-icon>
             </button>
@@ -89,21 +84,20 @@
             </div>
 
           </div>
-          <div class="typing-indicator" id="typing-indicator">
-            <div class="typing-circle"></div>
-            <div class="typing-circle"></div>
-            <div class="typing-circle"></div>
-            <div class="typing-shadow"></div>
-            <div class="typing-shadow"></div>
-            <div class="typing-shadow"></div>
-        </div>
-        <div id="chartContainer" style="width: 100%; height: 0px;"></div>
+          <div class="charts-container">
+            <div id="chartContainer1" style="width: 100%; height: 0px;"></div>
+            <div id="chartContainer2" style="width: 100%; height: 0px;"></div>
+          </div>
+
+
           <ul class="movies-list  has-scrollbar" id="contenedorPeliculas">
             <li  class="movie-card"></li>
           </ul>
+          <div class="preloader" id="preloader">
+            <img src="img/preloader.gif" alt="">
+          </div>
         </div>
       </section>
-
     </article>
   </main>
 
