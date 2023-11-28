@@ -310,8 +310,6 @@ function cargarPorOrdenacion() {
         peliculasArray.push(peliculaObj);
     });
 
-    var totalResults = peliculas.length;
-
     var contador = 0;
 
     peliculasArray.forEach(function (pelicula) {
