@@ -9,7 +9,7 @@ window.onload = function() {
     tipo.addEventListener("change", function() {
         if (inputBuscar.value.length >= 3) {
             limpiarRegistros();
-            if (miTimeout){
+            if (miTimeout != null){
                 clearTimeout(miTimeout);
             }
             miTimeout = setTimeout(cargar, 1000)
@@ -21,7 +21,7 @@ window.onload = function() {
     inputBuscar.addEventListener("input", function() {
         if (inputBuscar.value.length >= 3) {
             limpiarRegistros();
-            if (miTimeout){
+            if (miTimeout != null){
                 clearTimeout(miTimeout);
             }
             miTimeout = setTimeout(cargar, 1000);
@@ -49,7 +49,7 @@ window.onload = function() {
 }
 
 var cargando = false;
-let contador = 1;
+let contador = 0;
 var detallesAbiertos = null;
 
 
@@ -80,7 +80,7 @@ function cargar(page){
             cargandoElement.style.visibility = "hidden";
             datos = this.responseText;
             var datosObjeto = JSON.parse(datos);
-            console.log(datos);
+            // console.log(datos);
             maquetar(datosObjeto);
             cargando = false;
         }
@@ -249,7 +249,7 @@ function limpiarRegistros(){
     var resultados = document.getElementById("resultados");
     var chartContainer1 = document.getElementById("chartContainer1");
     var chartContainer2 = document.getElementById("chartContainer2");
-    contador = 1;
+    contador = 0;
 
     chartContainer1.style.height = "0px";
     chartContainer1.innerHTML = "";
@@ -269,7 +269,7 @@ function scrollInfinito(){
         let clientHeight = document.documentElement.clientHeight;
         if ((scrollTop + clientHeight) > (altoScroll - 200)) {
             contador++;
-            console.log(contador);
+            // console.log(contador);
             cargando = true;
             cargar(contador);
         }
@@ -407,13 +407,13 @@ function generarInforme(peliculas,ordenacion, modoordenacion) {
     var ordenacion = ordenacion;
     var modoordenacion = modoordenacion;
 
-    console.log(ordenacion);
-    console.log(modoordenacion);
+    // console.log(ordenacion);
+    // console.log(modoordenacion);
     google.charts.load("current", {packages:["corechart"]});
     google.charts.setOnLoadCallback(drawChart);
 
     function drawChart() {
-        console.log(peliculas[0][modoordenacion]); 
+        // console.log(peliculas[0][modoordenacion]); 
         if (modoordenacion == "BoxOffice") {
 
             var data = google.visualization.arrayToDataTable([
