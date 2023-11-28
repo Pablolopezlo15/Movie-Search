@@ -1,11 +1,18 @@
+var miTimeout = null;
 window.onload = function() {
     var inputBuscar = document.getElementById("nombrePelicula");
     var tipo = document.getElementById("tipo");
-    
+    var searchbtn = document.getElementById("search-btn");
+
+    searchbtn.addEventListener("click", cargar);
+
     tipo.addEventListener("change", function() {
         if (inputBuscar.value.length >= 3) {
             limpiarRegistros();
-            cargar();
+            if (miTimeout){
+                clearTimeout(miTimeout);
+            }
+            miTimeout = setTimeout(cargar, 1000)
         } else {
             limpiarRegistros();
         }
@@ -14,7 +21,10 @@ window.onload = function() {
     inputBuscar.addEventListener("input", function() {
         if (inputBuscar.value.length >= 3) {
             limpiarRegistros();
-            cargar();
+            if (miTimeout){
+                clearTimeout(miTimeout);
+            }
+            miTimeout = setTimeout(cargar, 1000);
         } else {
             limpiarRegistros();
         }
@@ -79,7 +89,7 @@ function cargar(page){
 
 }
 
-
+//CARGA LOS DATOS DE CADA PELICULA POR ID
 function cargarDetalles(e){
     var cargandoElement = document.getElementById("preloader");
     cargandoElement.style.visibility = "visible";
@@ -100,7 +110,7 @@ function cargarDetalles(e){
 }
 
 
-
+//MAQUETA LOS DATOS DE UNA PELICULA AL HACER CLICK EN UNA DE ELLAS
 function maquetarDetalles(datosObjeto){
     if (detallesAbiertos) {
         document.body.removeChild(detallesAbiertos);
@@ -172,7 +182,7 @@ function maquetarDetalles(datosObjeto){
 }
 
 
-
+//MAQUETA LOS DATOS OBTENIDOS DE CARGAR (BUSQUEDA POR NOMBRE)
 function maquetar(datosObjeto) {
     var inputBuscar = document.getElementById("nombrePelicula");
     var peliculas = datosObjeto.Search;
@@ -232,13 +242,14 @@ function maquetar(datosObjeto) {
     } 
 }
 
+//LIMPIA LA PÁGINA DE RESULTADOS DE LA BÚSQUEDA
 function limpiarRegistros(){
     var contenedorPeliculas = document.getElementById("contenedorPeliculas");
     var encontrados = document.getElementById("encontrados");
     var resultados = document.getElementById("resultados");
     var chartContainer1 = document.getElementById("chartContainer1");
     var chartContainer2 = document.getElementById("chartContainer2");
-
+    contador = 1;
 
     chartContainer1.style.height = "0px";
     chartContainer1.innerHTML = "";
@@ -250,7 +261,7 @@ function limpiarRegistros(){
 
 }
 
-
+//SCROLL INFINITO CARGA PELICULAS AL HACER SCROLL
 function scrollInfinito(){
     if (!cargando) {
         let altoScroll = document.documentElement.scrollHeight;
@@ -265,6 +276,7 @@ function scrollInfinito(){
     }
 }
 
+//COMPRUEBA EL BOTON QUE HE PULSADO PARA LA ORDENACIÓN
 function checkedBoton(e) {
     var imdbRatingBtn = document.getElementById("imdbRatingBtn");
     var MayorRecaudacionBtn = document.getElementById("MayorRecaudacionBtn");
@@ -278,7 +290,7 @@ function checkedBoton(e) {
     cargarPorOrdenacion();
 }
 
-
+//
 function cargarPorOrdenacion() {
     var inputBuscar = document.getElementById("nombrePelicula");
     var tipo = document.getElementById("tipo").value;
