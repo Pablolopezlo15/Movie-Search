@@ -6,29 +6,20 @@ window.onload = function() {
 
     searchbtn.addEventListener("click", cargar);
 
-    tipo.addEventListener("change", function() {
+    function inputTimeout(){
         if (inputBuscar.value.length >= 3) {
             limpiarRegistros();
-            if (miTimeout != null){
-                clearTimeout(miTimeout);
-            }
-            miTimeout = setTimeout(cargar, 1000)
-        } else {
-            limpiarRegistros();
-        }
-    });
-
-    inputBuscar.addEventListener("input", function() {
-        if (inputBuscar.value.length >= 3) {
-            limpiarRegistros();
-            if (miTimeout != null){
+            if (miTimeout !== null) {
                 clearTimeout(miTimeout);
             }
             miTimeout = setTimeout(cargar, 1000);
         } else {
             limpiarRegistros();
         }
-    });
+    }
+
+    tipo.addEventListener("change", inputTimeout);
+    inputBuscar.addEventListener("input", inputTimeout);
 
     var imdbRatingBtn = document.getElementById("imdbRatingBtn");
     var MayorRecaudacionBtn = document.getElementById("MayorRecaudacionBtn");
@@ -51,7 +42,6 @@ window.onload = function() {
 var cargando = false;
 let contador = 0;
 var detallesAbiertos = null;
-
 
 function cargar(page){
     var inputBuscar = document.getElementById("nombrePelicula");
